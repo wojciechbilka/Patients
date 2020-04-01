@@ -44,4 +44,27 @@ public class PatientsService {
         System.out.println("There is no patient in list");
         return null;
     }
+
+    public boolean patientExist(String pesel) {
+        List<Patient> patients = PatientsReader.readFile(path, sheetName);
+        for (Patient p : patients) {
+            if (p.getPesel().equals(pesel)) {
+                return true;
+            }
+        }
+        System.out.println("There is no such patient in list");
+        return false;
+    }
+
+    public boolean patientExist(String name, String surname) {
+        List<Patient> patients = PatientsReader.readFile(path, sheetName);
+
+        for (Patient p : patients) {
+            if (p.getName().equals(name) || p.getSurname().equals(surname)) {
+                return true;
+            }
+        }
+        System.out.println("There is no such patient in list");
+        return false;
+    }
 }
