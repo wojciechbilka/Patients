@@ -4,6 +4,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -39,13 +40,13 @@ public class PatientsWriter {
         XSSFWorkbook workbook;
         XSSFSheet sheet;
         try {
-            workbook = new XSSFWorkbook(filePath);
-            sheet = workbook.createSheet(sheetName);
+            workbook = new XSSFWorkbook(new FileInputStream(filePath));
+            sheet = workbook.getSheet(sheetName);
         } catch (IOException e) {
             e.printStackTrace();
             return;
         }
-        if(sheet.getLastRowNum() > 0) {
+        if (sheet.getLastRowNum() > 0) {
             Row row = sheet.createRow(sheet.getLastRowNum() + 1);
             row.createCell(0).setCellValue(patient.getName());
             row.createCell(1).setCellValue(patient.getSurname());

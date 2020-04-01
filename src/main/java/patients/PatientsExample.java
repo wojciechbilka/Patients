@@ -21,10 +21,11 @@ public class PatientsExample {
         PatientsService patientsService = new PatientsService(FILE_PATH, SHEET_NAME);
 
         PatientsWriter.creatingFile(patients, FILE_PATH, SHEET_NAME);
-        PatientsWriter.addRecord(patient, FILE_PATH, SHEET_NAME);
+        PatientsWriter.creatingFile(patients, FILE_PATH, SHEET_NAME);
 
         Patient foundPatient = patientsService.findPatient("12398467");
         System.out.println(patientsService.patientExist("12398467"));
         System.out.println(foundPatient);
+        PatientsWriter.addRecord(patient, FILE_PATH, SHEET_NAME);
     }
 }
