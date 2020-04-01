@@ -18,6 +18,11 @@
             <artifactId>poi-ooxml</artifactId>
             <version>4.1.2</version>
         </dependency>
+        <dependency>
+            <groupId>maven</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <version>1.7.2</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -29,6 +34,12 @@
                     <source>8</source>
                     <target>8</target>
                 </configuration>
+            </plugin>
+            <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+                <version>3.9.0</version>
+
             </plugin>
         </plugins>
     </build>
