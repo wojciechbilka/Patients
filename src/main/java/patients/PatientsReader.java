@@ -26,10 +26,22 @@ public class PatientsReader {
 
         for (int i = 1; i <= sheet.getLastRowNum(); i++) {
             Row row = sheet.getRow(i);
-            list.add(new Patient(row.getCell(0).toString(),
+            list.add(new Patient(
+                    row.getCell(0).toString(),
                     row.getCell(1).toString(),
-                    row.getCell(2).toString()));
+                    row.getCell(2).toString(),
+                    Double.valueOf(row.getCell(3).toString())));
         }
         return list;
+    }
+
+    public static boolean isUnique(Patient patient, String path, String sheetName) {
+        List<Patient> patients = readFile(path, sheetName);
+        for (Patient p : patients) {
+            if (p.getPesel().equals(patient.getPesel())) {
+                return false;
+            }
+        }
+        return true;
     }
 }

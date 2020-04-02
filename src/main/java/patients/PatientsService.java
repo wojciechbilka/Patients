@@ -13,14 +13,13 @@ public class PatientsService {
     private String sheetName;
 
 
-    public void register(Patient patient) {
-        List<Patient> patients = PatientsReader.readFile(path, sheetName);
-        if (patients.contains(patient)) {
-            System.out.println("Patient is already registered.");
-        } else {
-            patients.add(patient);
-            PatientsWriter.creatingFile(patients, path, sheetName);
+    public boolean register(Patient patient) {
+        boolean flag = false;
+        if (PatientsReader.isUnique(patient, path, sheetName) && !patient.getPesel().isEmpty()) {
+            PatientsWriter.addRecord(patient, path, sheetName);
+            flag = true;
         }
+        return flag;
     }
 
     public Patient findPatient(String pesel) {
@@ -67,4 +66,13 @@ public class PatientsService {
         System.out.println("There is no such patient in list");
         return false;
     }
+
+    public List<Patient> getPatients() {
+        return PatientsReader.readFile(path, sheetName);
+    }
+
+    public boolean removePatient(Patient patient) {
+        return PatientsWriter.removeRecord(patient, path, sheetName);
+    }
+
 }
