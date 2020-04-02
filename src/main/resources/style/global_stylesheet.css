@@ -1,0 +1,36 @@
+.label {
+    -fx-font-size: 13px;
+}
+
+.result {
+    -fx-border-width: 10px;
+    -fx-border-color: #b8d0ff;
+    -fx-border-style: solid;
+    -fx-border-radius: 25px;
+}
+
+.columnTitle {
+    -fx-font-size: 10pt;
+    -fx-font-family: "Tahoma";
+    -fx-font-weight: BOLD;
+}
+
+.root {
+    -fx-font-size: 14pt;
+    -fx-font-family: "Tahoma";
+}
+
+.button{
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-max-width: 100;
+    -fx-max-height: 100;
+    -fx-text-alignment: LEFT;
+}
+.text-field.error {
+    -fx-text-box-border: red ;
+    -fx-focus-color: red ;
+}
+.label.error {
+    -fx-text-fill: red;
+}

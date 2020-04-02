@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1"  fx:controller="patients.PatientsController">
+    <HBox alignment="BASELINE_LEFT" spacing="10" AnchorPane.bottomAnchor="10" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="10">
+        <padding>
+            <Insets bottom="10" left="10" right="10" top="10" />
+        </padding>
+        <VBox spacing="10">
+            <Button fx:id="add" onAction="#addPatient">
+                ADD
+            </Button>
+            <Button fx:id="remove" onAction="#removePatient">
+                REMOVE
+            </Button>
+            <Button fx:id="performTest" onAction="#performTest">
+                PERFORM TEST
+            </Button>
+        </VBox>
+        <VBox spacing="10">
+            <TextField fx:id="nameField" promptText="Name..">
+            </TextField>
+            <TextField fx:id="surnameField" promptText="Surname..">
+            </TextField>
+            <TextField fx:id="personalNumberField" promptText="PersonalNumber..">
+            </TextField>
+            <TextField fx:id="walletField" promptText="Money paid in..">
+            </TextField>
+            <Label fx:id="logMessage" alignment="CENTER" contentDisplay="CENTER" visible="false" VBox.vgrow="ALWAYS">
+            </Label>
+        </VBox>
+        <GridPane fx:id="grid" gridLinesVisible="false" hgap="20" vgap="5" HBox.hgrow="ALWAYS">
+            <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints fillHeight="true" valignment="CENTER" vgrow="ALWAYS" />
+            </rowConstraints>
+            <Label fx:id="gridLabel0" styleClass="columnTitle" GridPane.columnIndex="0" GridPane.columnSpan="1" GridPane.rowIndex="0" GridPane.rowSpan="1">
+                Num
+            </Label>
+            <Label fx:id="gridLabel1" styleClass="columnTitle" GridPane.columnIndex="1" GridPane.columnSpan="1" GridPane.rowIndex="0" GridPane.rowSpan="1">
+                Name
+            </Label>
+            <Label fx:id="gridLabel2" styleClass="columnTitle" GridPane.columnIndex="2" GridPane.columnSpan="1" GridPane.rowIndex="0" GridPane.rowSpan="1">
+                Surname
+            </Label>
+            <Label fx:id="gridLabel3" styleClass="columnTitle" GridPane.columnIndex="3" GridPane.columnSpan="1" GridPane.rowIndex="0" GridPane.rowSpan="1">
+                Personal Number
+            </Label>
+            <Label fx:id="gridLabel4" styleClass="columnTitle" GridPane.columnIndex="4" GridPane.columnSpan="1" GridPane.rowIndex="0" GridPane.rowSpan="1">
+                Balance
+            </Label>
+        </GridPane>
+    </HBox>
+</AnchorPane>
