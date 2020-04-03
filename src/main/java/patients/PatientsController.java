@@ -1,6 +1,5 @@
 package patients;
 
-import com.sun.javafx.css.StyleClassSet;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -11,7 +10,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.List;
 
 public class PatientsController {
@@ -38,12 +36,13 @@ public class PatientsController {
     @FXML
     private TextField personalNumberField;
     @FXML
-    private TextField walletField;
+    private TextField balanceField;
     @FXML
     private Label logMessage;
 
-    PatientsService patientsService = new PatientsService(FILE_PATH, SHEET_NAME);
-    double testPrice = 200;
+    PatientsService patientsService;
+    UserLog userLog;
+    PatientsValidator patientsValidator;
 
     private EventHandler<MouseEvent> handleDoubleClick = event -> {
         if (event.getClickCount() == 2) {
@@ -52,7 +51,7 @@ public class PatientsController {
                 if (label.getParent() instanceof GridPane) {
                     GridPane gp = (GridPane) label.getParent();
                     for (Node node : gp.getChildren()) {
-                        if (node instanceof Label && GridPane.getRowIndex(node) == GridPane.getRowIndex(label)) {
+                        if (node instanceof Label && GridPane.getRowIndex(node).equals(GridPane.getRowIndex(label))) {
                             Label l = (Label) node;
                             switch (GridPane.getColumnIndex(l)) {
                                 case 1:
@@ -65,7 +64,7 @@ public class PatientsController {
                                     personalNumberField.setText(l.getText());
                                     break;
                                 case 4:
-                                    walletField.setText(l.getText());
+                                    balanceField.setText(l.getText());
                                     break;
                             }
 
@@ -78,45 +77,37 @@ public class PatientsController {
 
     @FXML
     private void initialize() {
+        patientsService = new PatientsService(FILE_PATH, SHEET_NAME);
+        userLog = new UserLog(logMessage);
+        patientsValidator = new PatientsValidator(patientsService, userLog);
         initializeFile();
         updateDisplay();
     }
 
     @FXML
     public void addPatient() {
-        Patient patient = new Patient(nameField.getText(), surnameField.getText(), personalNumberField.getText(), getTextFieldDoubleValue(walletField));
-        if (allValid() & validPatientNotExist(patient)) {
+        if (allValid() & patientsValidator.validPatientNotExist(personalNumberField.getText())) {
+            Patient patient = new Patient(nameField.getText(), surnameField.getText(), personalNumberField.getText(), getTextFieldDoubleValue(balanceField));
             patientsService.register(patient);
             updateDisplay();
             clearTextFields();
-            clearLogMessage();
+            userLog.clearMessage();
         }
     }
 
     @FXML
     public void removePatient() {
-        Patient patient = new Patient(nameField.getText(), surnameField.getText(), personalNumberField.getText(), getTextFieldDoubleValue(walletField));
-        if (allValid() & validPatientExist(patient)) {
+        if (allValid() & patientsValidator.validatePatientExist(personalNumberField.getText())) {
+            Patient patient = new Patient(nameField.getText(), surnameField.getText(), personalNumberField.getText(), getTextFieldDoubleValue(balanceField));
             patientsService.removePatient(patient);
             updateDisplay();
             clearTextFields();
-            clearLogMessage();
-        } //Brak porównania wszystkich pól
+            userLog.clearMessage();
+        }
     }
 
     @FXML
     private void performTest() {
-        TestResult testResult = TestResult.NOT_PERFORMED;
-        Patient patient = new Patient(nameField.getText(), surnameField.getText(), personalNumberField.getText(), getTextFieldDoubleValue(walletField));
-        if (patientsService.patientExist(patient.getPesel())) {
-            if (patient.getWallet() > testPrice) {
-                patient.payForTest(testPrice);
-                testResult = TestResult.NEGATIVE; // zmienic potem zeby byl random
-            } else {
-                testResult = TestResult.NOT_PERFORMED;
-            }
-            markPatientRow(patient, testResult);
-        }
     }
 
     private void markPatientRow(Patient patient, TestResult testResult) {
@@ -174,7 +165,7 @@ public class PatientsController {
     public void removeNodeByRowColumnIndex(final int row, final int column, GridPane gridPane) {
         ObservableList<Node> children = gridPane.getChildren();
         for (Node node : children) {
-            if (node instanceof Label && gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
+            if (node instanceof Label && GridPane.getRowIndex(node).equals(row) && GridPane.getColumnIndex(node).equals(column)) {
                 Label label = (Label) node;
                 gridPane.getChildren().remove(label);
                 break;
@@ -193,112 +184,23 @@ public class PatientsController {
         nameField.clear();
         surnameField.clear();
         personalNumberField.clear();
-        walletField.clear();
-    }
-
-    private static boolean validate(TextField tf) {
-        ObservableList<String> styleClass = tf.getStyleClass();
-        if (tf.getText().trim().length() == 0) {
-            if (!styleClass.contains("error")) {
-                styleClass.add("error");
-            }
-            return false;
-        }
-        styleClass.removeAll(Collections.singleton("error"));
-        return true;
-    }
-
-    private static boolean validateNumber(TextField tf) {
-        ObservableList<String> styleClass = tf.getStyleClass();
-        if (tf.getText().trim().length() == 0 || !tf.getText().matches("([0-9]*)([.,][0-9]{2})?")) {
-            if (!styleClass.contains("error")) {
-                styleClass.add("error");
-            }
-            return false;
-        }
-        styleClass.removeAll(Collections.singleton("error"));
-        return true;
-    }
-
-    private static boolean validatePersonalNumber(TextField tf) {
-        ObservableList<String> styleClass = tf.getStyleClass();
-        if (!tf.getText().matches("[0-9]{8}")) {
-            if (!styleClass.contains("error")) {
-                styleClass.add("error");
-            }
-            return false;
-        }
-        styleClass.removeAll(Collections.singleton("error"));
-        return true;
+        balanceField.clear();
     }
 
     private boolean allValid() {
-        boolean nameFieldCorrect = validate(nameField);
-        boolean surnameFieldCorrect = validate(surnameField);
-        boolean personalNumberCorrect = validatePersonalNumber(personalNumberField);
-        boolean walletFieldCorrect = validateNumber(walletField);
-        boolean valid = nameFieldCorrect && surnameFieldCorrect && personalNumberCorrect && walletFieldCorrect;
-        if (!valid) {
-            logMessage.setVisible(true);
-            if(!logMessage.getText().contains("Field incorrectly filled or empty.")) {
-                logMessage.setText(logMessage.getText().isEmpty() ?
-                        logMessage.getText() + "Field incorrectly filled or empty." :
-                        logMessage.getText() + "\nField incorrectly filled or empty.");
-            }
-            ObservableList<String> styleClass = logMessage.getStyleClass();
-            if (!styleClass.contains("error")) {
-                styleClass.add("error");
-            }
-        }
+        boolean nameFieldCorrect = patientsValidator.validateTextFieldConsistsOfLetters(nameField);
+        boolean surnameFieldCorrect = patientsValidator.validateTextFieldConsistsOfLetters(surnameField);
+        boolean personalNumberCorrect = patientsValidator.validateTextFieldIsAIntegerNumberOfXDigit(personalNumberField, 8);
+        boolean walletFieldCorrect = patientsValidator.validateTextFieldIsAnIntegerOr2DecimalNumber(balanceField);
         return nameFieldCorrect && surnameFieldCorrect && personalNumberCorrect && walletFieldCorrect;
     }
 
-    private boolean validPatientExist(Patient patient) {
-        boolean patientExist = patientsService.patientExist(personalNumberField.getText());
-        if (!patientExist) {
-            logMessage.setVisible(true);
-            if(!logMessage.getText().contains("Patient does not exist on the list.")) {
-                logMessage.setText(logMessage.getText().isEmpty() ?
-                        logMessage.getText() + "Patient does not exist on the list." :
-                        logMessage.getText() + "\nPatient does not exist on the list.");
-            }
-            ObservableList<String> styleClass = logMessage.getStyleClass();
-            if (!styleClass.contains("error")) {
-                styleClass.add("error");
-            }
-        }
-        return patientExist;
-    }
-
-    private boolean validPatientNotExist(Patient patient) {
-        boolean patientExist = patientsService.patientExist(personalNumberField.getText());
-        if (patientExist) {
-            logMessage.setVisible(true);
-            if (!logMessage.getText().contains("Patient already exist on the list.")) {
-                logMessage.setText(logMessage.getText().isEmpty() ?
-                        logMessage.getText() + "Patient already exist on the list." :
-                        logMessage.getText() + "\nPatient already exist on the list.");
-            }
-            ObservableList<String> styleClass = logMessage.getStyleClass();
-            if (!styleClass.contains("error")) {
-                styleClass.add("error");
-            }
-        }
-        return !patientExist;
-    }
-
-    private void clearLogMessage() {
-        logMessage.setText("");
-        ObservableList<String> styleClass = logMessage.getStyleClass();
-        if (styleClass.contains("error")) {
-            styleClass.remove("error");
-        }
-        logMessage.setVisible(false);
-    }
-
+    // add filter for only number access
     private Double getTextFieldDoubleValue(TextField textField) {
-        Double doubleNumber = Double.valueOf(textField.getText());
-        return textField.getText().isEmpty() ? Double.valueOf(0) : Double.valueOf(doubleNumber);
+        double doubleNumber = Double.parseDouble(textField.getText().isEmpty() ?
+                "0" :
+                textField.getText().replace(',', '.'));
+        return doubleNumber;
     }
 
     public Node getNodeByRowColumnIndex(final int row, final int column, GridPane gridPane) {
