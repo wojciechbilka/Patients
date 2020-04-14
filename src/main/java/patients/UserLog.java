@@ -128,6 +128,18 @@ public class UserLog {
         }
     }
 
+    public void patientIsSolventPrompt(boolean validatorResult) {
+        logMessage.setVisible(true);
+        String previousMessage = logMessage.getText();
+        String promptMessage = "Patient does not have enough money.";
+        String promptMessageToReplace = "Patient with given data does not exist.";
+        if (validatorResult) {
+            removePromptMessage(previousMessage, promptMessage);
+        } else {
+            insertOrReplacePromptMessage(previousMessage, promptMessageToReplace, promptMessage);
+        }
+    }
+
     private void insertOrReplacePromptMessage(String previousMessage, String promptMessageToReplace, String promptMessage) {
         logMessage.setVisible(true);
         if (!previousMessage.contains(promptMessage)) {
@@ -141,12 +153,24 @@ public class UserLog {
         }
     }
 
+    public void personalNumberIsNotUniquePrompt(boolean validatorResult) {
+        logMessage.setVisible(true);
+        String previousMessage = logMessage.getText();
+        String promptMessage = "Personal Number is not unique.";
+        if (validatorResult) {
+            removePromptMessage(previousMessage, promptMessage);
+        } else {
+            insertPromptMessage(previousMessage, promptMessage);
+        }
+    }
+
     private void initializeMap() {
         fieldNamesMap = new HashMap<>();
         fieldNamesMap.put("nameField", "Name");
         fieldNamesMap.put("surnameField", "Surname");
         fieldNamesMap.put("personalNumberField", "Personal Number");
-        fieldNamesMap.put("balanceField", "Money pain in");
+        fieldNamesMap.put("balanceField", "Money paid in");
+        fieldNamesMap.put("testCostField", "Test Cost");
     }
 
     public void clearMessage() {
