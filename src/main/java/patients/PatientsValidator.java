@@ -6,11 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.Collections;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 public class PatientsValidator {
-    private PatientsService patientsService;
     private UserLog userLog;
 
     private boolean validateTextFieldNotEmpty(TextField tf) {
@@ -44,15 +44,32 @@ public class PatientsValidator {
         return result;
     }
 
-    public boolean validatePatientExist(String personalNumber) {
-        boolean result = patientsService.patientExist(personalNumber);
+    public boolean validatePatientExist(List<Patient> patients, Patient patient) {
+        boolean result = patients.contains(patient);
         userLog.patientDoesNotExistPrompt(result);
         return result;
     }
 
-    public boolean validPatientNotExist(String personalNumber) {
-        boolean result = !patientsService.patientExist(personalNumber);
+    public boolean validatePatientNotExist(List<Patient> patients, Patient patient) {
+        boolean result = !patients.contains(patient);
         userLog.patientExistPrompt(result);
+        return result;
+    }
+
+    public boolean validatePatientsPersonalNumberIsUnique(List<Patient> patients, String personalNumber) {
+        boolean result = true;
+        for(Patient p : patients) {
+            if(p.getPersonalNumber().equals(personalNumber)) {
+                result = false;
+            }
+        }
+        userLog.personalNumberIsNotUniquePrompt(result);
+        return result;
+    }
+
+    public boolean validatePatientIsSolvent(Patient patient, double price) {
+        boolean result = patient.isSolvent(price);
+        userLog.patientIsSolventPrompt(result);
         return result;
     }
 
