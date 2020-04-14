@@ -2,15 +2,16 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.collections.FXCollections?>
+<?import patients.TestResult?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="patients.PatientsController">
     <HBox minHeight="300" spacing="10" AnchorPane.bottomAnchor="10" AnchorPane.leftAnchor="10"
           AnchorPane.rightAnchor="10" AnchorPane.topAnchor="10">
@@ -21,8 +22,14 @@
             <Button fx:id="remove" onAction="#removePatient" VBox.vgrow="ALWAYS">
                 REMOVE
             </Button>
+            <Button onAction="#updatePatientData" VBox.vgrow="ALWAYS">
+                UPDATE
+            </Button>
             <Button fx:id="performTest" onAction="#performTest" VBox.vgrow="ALWAYS">
                 PERFORM TEST
+            </Button>
+            <Button fx:id="clear" onAction="#clearTextFields" VBox.vgrow="ALWAYS">
+                CLEAR
             </Button>
         </VBox>
         <VBox minWidth="330" maxWidth="400" spacing="10" HBox.hgrow="ALWAYS">
@@ -34,44 +41,52 @@
             </TextField>
             <TextField fx:id="balanceField" promptText="Money paid in.." VBox.vgrow="ALWAYS">
             </TextField>
-            <Label fx:id="logMessage" alignment="CENTER" contentDisplay="CENTER" visible="false" VBox.vgrow="ALWAYS">
+            <ChoiceBox fx:id="testResultChoiceBox" prefWidth="Infinity" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <TestResult fx:constant="AMBIGUOUS"/>
+                        <TestResult fx:constant="NEGATIVE"/>
+                        <TestResult fx:constant="POSITIVE"/>
+                        <TestResult fx:constant="NOT_PERFORMED"/>
+                    </FXCollections>
+                </items>
+            </ChoiceBox>
+            <TextField fx:id="testCostField" promptText="Test cost" VBox.vgrow="ALWAYS">
+            </TextField>
+            <Label fx:id="logMessage" alignment="TOP_LEFT" contentDisplay="TOP" visible="false" prefHeight="80"
+                   VBox.vgrow="ALWAYS">
             </Label>
         </VBox>
-        <VBox minWidth="200" spacing="10" HBox.hgrow="ALWAYS">
-        <ScrollPane fx:id="scrollPane" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
-            <GridPane fx:id="grid" gridLinesVisible="true" hgap="20" vgap="5" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
-                <columnConstraints>
-                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
-                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
-                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
-                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
-                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
-                </columnConstraints>
-                <rowConstraints>
-                    <RowConstraints valignment="TOP" vgrow="ALWAYS"/>
-                </rowConstraints>
-                <Label fx:id="gridLabel0" styleClass="columnTitle" GridPane.columnIndex="0" GridPane.columnSpan="1"
-                       GridPane.rowIndex="0" GridPane.rowSpan="1">
-                    Num
-                </Label>
-                <Label fx:id="gridLabel1" styleClass="columnTitle" GridPane.columnIndex="1" GridPane.columnSpan="1"
-                       GridPane.rowIndex="0" GridPane.rowSpan="1">
-                    Name
-                </Label>
-                <Label fx:id="gridLabel2" styleClass="columnTitle" GridPane.columnIndex="2" GridPane.columnSpan="1"
-                       GridPane.rowIndex="0" GridPane.rowSpan="1">
-                    Surname
-                </Label>
-                <Label fx:id="gridLabel3" styleClass="columnTitle" GridPane.columnIndex="3" GridPane.columnSpan="1"
-                       GridPane.rowIndex="0" GridPane.rowSpan="1">
-                    Personal Number
-                </Label>
-                <Label fx:id="gridLabel4" styleClass="columnTitle" GridPane.columnIndex="4" GridPane.columnSpan="1"
-                       GridPane.rowIndex="0" GridPane.rowSpan="1">
-                    Balance
-                </Label>
-            </GridPane>
-        </ScrollPane>
+        <VBox spacing="10" HBox.hgrow="ALWAYS">
+            <TableView fx:id="tableView" prefWidth="495" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn text="Name">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="name"/>
+                        </cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Surname">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="surname"/>
+                        </cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Personal Number">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="personalNumber"/>
+                        </cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Balance">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="balance"/>
+                        </cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Test Result">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="testResult"/>
+                        </cellValueFactory>
+                    </TableColumn>
+                </columns>
+            </TableView>
         </VBox>
     </HBox>
 </AnchorPane>
