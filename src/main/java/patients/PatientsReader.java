@@ -30,7 +30,8 @@ public class PatientsReader {
                     row.getCell(0).toString(),
                     row.getCell(1).toString(),
                     row.getCell(2).toString(),
-                    Double.valueOf(row.getCell(3).toString())));
+                    Double.valueOf(row.getCell(3).toString()),
+                    TestResult.valueOf(row.getCell(4).toString())));
         }
         return list;
     }
@@ -38,7 +39,7 @@ public class PatientsReader {
     public static boolean isUnique(Patient patient, String path, String sheetName) {
         List<Patient> patients = readFile(path, sheetName);
         for (Patient p : patients) {
-            if (p.getPesel().equals(patient.getPesel())) {
+            if (p.equals(patient)) {
                 return false;
             }
         }
