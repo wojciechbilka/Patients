@@ -13,7 +13,7 @@ import java.util.List;
 public class PatientsValidator {
     private UserLog userLog;
 
-    private boolean validateTextFieldNotEmpty(TextField tf) {
+    public boolean validateTextFieldNotEmpty(TextField tf) {
         boolean result = !tf.getText().isEmpty();
         userLog.textFieldEmptyPrompt(tf, result);
         setTextFieldBorderAlert(tf, result);
